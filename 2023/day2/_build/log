@@ -1,0 +1,22 @@
+# dune exec day2
+# OCAMLPARAM: unset
+# Shared cache: disabled
+# Shared cache location: /home/john/.cache/dune/db
+# Workspace root: /home/john/Projects/AoC2023/day2
+# Auto-detected concurrency: 8
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; installed_env =
+#      map
+#        { "INSIDE_DUNE" : "/home/john/Projects/AoC2023/day2/_build/default"
+#        ; "OCAML_COLOR" : "always"
+#        ; "OPAMCOLOR" : "always"
+#        }
+#  ; instrument_with = []
+#  }
+$ /home/john/.opam/5.1.0/bin/ocamlc.opt -config > /tmp/dune_12e9ca_output
