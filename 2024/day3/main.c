@@ -62,7 +62,7 @@ int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv SCR(
 	putss("Advent of Code: Day 3!");
 
 	if (argc < 2) {
-		errputs("Please provide input file...");
+		eputs("Please provide input file...");
 		return 1;
 	}
 
