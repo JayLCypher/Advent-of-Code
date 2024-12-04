@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
-constexpr const char *example[] = {
+static constexpr const char *example[] = {
 	"seeds: 79 14 55 13",
 	"",
 	"seed-to-soil map:",
@@ -47,9 +47,11 @@ constexpr bool print_input = false;
 constexpr bool do_example = true;
 constexpr size_t example_location[] = {35, 46};
 constexpr auto do_part = 2;
-constexpr const char input_file_name[] = "input.txt";
+constexpr const char *const input_file_name = "input.txt";
 
-size_t part1(std::vector<std::string> input) {
+namespace {
+
+size_t part1(const std::vector<std::string> &input) {
 	// The maps are as follows:
 	// DST SRC RANGE
 	// <SRC, SRC+RANGE> = <MIN, MAX>
@@ -63,16 +65,16 @@ size_t part1(std::vector<std::string> input) {
 	auto maps_vec =
 		std::vector<std::unordered_map<size_t, std::pair<size_t, size_t>>>();
 	auto map = std::unordered_map<size_t, std::pair<size_t, size_t>>();
-	for (auto s : input) {
+	for (const auto &s : input) {
 		auto line = std::istringstream{s};
 		auto word = std::string{};
 		line >> word;
 		if (word.empty()) {
 			maps_vec.push_back(map);  // Push it in the vector of maps.
-			map = std::unordered_map<size_t,
-									 std::pair<size_t, size_t>>();	// New map.
+			map = std::unordered_map<size_t, std::pair<size_t, size_t>>(); // New map.
 			continue;
-		} else if (word == "seeds:") {
+		}
+		if (word == "seeds:") {
 			// Build the vector of seeds
 			std::cout << word << " ";
 			while (line >> word) {
@@ -80,14 +82,14 @@ size_t part1(std::vector<std::string> input) {
 				seeds_vec.push_back(seed_num);
 				std::cout << seed_num << " ";
 			}
-			std::cout << std::endl;
+			std::cout << '\n';
 		} else {
 			auto dest_str = std::string{word};
 			auto src_str = std::string{};
 			auto range_str = std::string{};
 			line >> src_str;
 			if (src_str == "map:") {
-				std::cout << dest_str << ":" << std::endl;
+				std::cout << dest_str << ":" << '\n';
 			} else {
 				line >> range_str;
 				auto dest = std::strtoull(dest_str.c_str(), nullptr, 10);
@@ -102,12 +104,12 @@ size_t part1(std::vector<std::string> input) {
 		}
 	}
 	maps_vec.push_back(map);  // Push it in the vector of maps.
-	std::cout << "Maps amount: " << maps_vec.size() << std::endl;
+	std::cout << "Maps amount: " << maps_vec.size() << '\n';
 	location = seeds_vec.front();
 	for (auto seed : seeds_vec) {
 		auto cur = seed;
-		for (auto map : maps_vec) {
-			for (auto e : map) {
+		for (const auto &local_map : maps_vec) {
+			for (auto e : local_map) {
 				// std::cout << "Checking if " << cur << " in range [" <<
 				// e.first << ", " << e.first + e.second.second << "]" <<
 				// std::endl;
@@ -127,22 +129,23 @@ size_t part1(std::vector<std::string> input) {
 	return location;
 }
 
-size_t part2(std::vector<std::string> input) {
-	std::cout << "Starting Part 2!" << std::endl;
+size_t part2(const std::vector<std::string> &input) {
+	std::cout << "Starting Part 2!" << '\n';
 	size_t location = 0;
 	auto seeds_vec = std::vector<std::vector<size_t>>();
 	auto maps_vec = std::vector<std::vector<std::vector<size_t>>>();
 	auto map_name_vec = std::vector<std::string>();
 	auto map = std::vector<std::vector<size_t>>();
-	for (auto s : input) {
+	for (const auto &s : input) {
 		auto line = std::istringstream{s};
 		auto word = std::string{};
 		line >> word;
 		if (word.empty()) {
 			maps_vec.push_back(map);  // Push it in the vector of maps.
-			map = std::unordered_map<size_t, size_t>();	 // New map.
+			map = std::vector<std:vector<size_t>>(); // New Map
 			continue;
-		} else if (word == "seeds:") {
+		}
+		if (word == "seeds:") {
 			// Build the vector of seeds
 			std::cout << word << " ";
 			while (line >> word) {
@@ -158,7 +161,7 @@ size_t part2(std::vector<std::string> input) {
 				}
 				seeds_vec.push_back(v);
 			}
-			std::cout << std::endl;
+			std::cout << '\n';
 		} else {
 			auto dest_str = std::string{word};
 			auto src_str = std::string{};
@@ -174,41 +177,40 @@ size_t part2(std::vector<std::string> input) {
 				auto range = std::strtoull(range_str.c_str(), nullptr, 10);
 				// Create a row of src -> dst.
 				std::cout << "D: " << dest << "\t| S: " << src
-						  << "\t| R: " << range << std::endl;
+						  << "\t| R: " << range << '\n';
 				std::cout << "Inserting { " << src << ", < " << dest << ", "
-						  << range << "> };" << std::endl;
+						  << range << "> };" << '\n';
 				auto vec = std::vector<size_t>();
 				vec.reserve(range);
 				for (size_t i = src; i < src + range; ++i) {
 					vec.push_back(dest + i);
 				}
 				map.push_back(vec);
-				std::cout << " Section Finished." << std::endl;
+				std::cout << " Section Finished." << '\n';
 			}
 		}
 	}
 
 	// maps_vec.push_back(map); // Push it in the vector of maps.
-	std::cout << "Maps amount: " << maps_vec.size() << std::endl;
+	std::cout << "Maps amount: " << maps_vec.size() << '\n';
 	// Build a vector of all seeds
-	std::cout << "Building vector of numbers" << std::endl;
+	std::cout << "Building vector of numbers" << '\n';
 	auto results = std::vector<size_t>();
 	for (const auto &seed : seeds_vec) {
-		std::cout << "Seeds: [" << seed << ".."
-				  << "]" << std::endl;
-		std::cout << "Checking all values through the maps." << std::endl;
+		std::cout << "Seeds: [" << seed.front() << ".." << "]" << '\n';
+		std::cout << "Checking all values through the maps." << '\n';
 		size_t i = 0;
-		for (const auto &map : maps_vec) {
+		for (const auto &local_map : maps_vec) {
 			std::cout << map_name_vec[i] << ": ";
-			for (auto &seed_i : seeds) {
+			for (const auto &seed_i : seed) {
 				std::cout << "[" << seed_i << " -> ";
-				seed_i = map.contains(seed_i) ? map.at(seed_i) : seed_i;
+				seed_i = local_map.contains(seed_i) ? local_map.at(seed_i) : seed_i;
 				std::cout << seed_i << "] ";
 			}
-			std::cout << std::endl;
+			std::cout << '\n';
 			++i;
 		}
-		std::cout << "Done with maps, checking end results." << std::endl;
+		std::cout << "Done with maps, checking end results." << '\n';
 		location = seeds.front();
 		for (auto seed_i : seeds) {
 			location = location > seed_i ? seed_i : location;
@@ -220,52 +222,55 @@ size_t part2(std::vector<std::string> input) {
 		std::cout << res << " ";
 		location = location > res ? res : location;
 	}
-	std::cout << std::endl;
+	std::cout << '\n';
 	return location;
 }
+} // namespace
 
-int main(void) {
-	std::cout << "Advent of Code Day 5!\n" << std::endl;
+
+int main() {
+	std::cout << "Advent of Code Day 5!\n" << '\n';
+
 	// Set up input
 	auto input = std::vector<std::string>();
 	if (do_example) {
-		for (auto s : example) {
-			input.push_back(s);
+		for (const auto &s : example) {
+			input.emplace_back(s);
 		}
 	} else {
 		auto file_input = std::ifstream{input_file_name};
 		if (!file_input) {
 			std::cerr << "ERROR: Cannot open file " << input_file_name
 					  << "for reading\n"
-					  << std::endl;
+					  << '\n';
 			return -1;
 		}
 		auto file_line = std::string{};
 		while (std::getline(file_input, file_line)) {
 			input.push_back(file_line);
 		}
-		input.push_back("");
+		input.emplace_back("");
 	}
 	if (print_input) {
-		for (auto s : input) {
-			std::cout << s << std::endl;
+		for (const auto &s : input) {
+			std::cout << s << '\n';
 		}
 	}
 
 	size_t location = 0;
 	if (do_part == 1) {
 		location = part1(input);
-	} else if (do_part == 2) {
+	}
+	else if (do_part == 2) {
 		location = part2(input);
 	}
 
 	if (do_example) {
 		auto example_var = example_location[do_part == 2];
-		std::cout << "Location is " << location << " and should be "
-				  << example_var << std::endl;
+		std::cout << "Location is " << location << " and should be " << example_var << '\n';
 		assert(location == example_var);
 	} else {
-		std::cout << "Location is: " << location << std::endl;
+		std::cout << "Location is: " << location << '\n';
 	}
 	return 0;
 }
