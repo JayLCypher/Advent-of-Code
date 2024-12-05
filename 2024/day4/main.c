@@ -35,7 +35,7 @@ size_t lines_in_cstr(const char *restrict str)
 }
 
 int main([[maybe_unused]] const int argc, [[maybe_unused]] const char *argv SCR(argc)) {
-	putss("Advent of Code: Day 3!");
+	putss("Advent of Code: Day 4!");
 
 	if (argc < 2) {
 		eputs("Please provide input file...");
